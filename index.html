@@ -1,23 +1,35 @@
-<!DOCTYPE html>    <html>    <head>              <title>Generador de códigos</title>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de códigos</title>
+</head>
 
-</head>              
-<body style="background-color:#b0e0e6;">          
-   <h1 style="color:#1769aa;">Generador de códigos</h1>           
-          
-   <div style="
-    background-color:dff6ff;
+<body style="
+    background-color:#b0e0e6;
+    margin:0;
+    font-family:Arial,sans-serif;
+">
+
+<div style="
+    background-color:#dff6ff;
     width:80%;
     max-width:400px;
     margin:80px auto;
     padding:25px;
     border-radius:20px;
     text-align:center;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow:0 8px 25px rgba(0,0,0,0.15);
 ">
-    
-    <h1 style="color:#1769aa;">Generador de códigos</h1>
 
-    <p id="codigo">Tu código aparecerá aquí</p>
+    <h1 style="color:#1769aa;">
+        Generador de códigos
+    </h1>
+
+    <p id="codigo">
+        Tu código aparecerá aquí
+    </p>
 
     <button onclick="generarCodigo()" style="
         background-color:#1769aa;
@@ -26,29 +38,78 @@
         border:none;
         border-radius:10px;
         font-size:16px;
+        cursor:pointer;
     ">
         GENERAR CÓDIGO
     </button>
 
 </div>
-         <script>            
-          let codigosUsados = [];              
-    function generarCodigo() {        
-    let numero;        
-        
-    do {        
-        numero = Math.floor(Math.random() * 100000)        
-            .toString()        
-            .padStart(5, "0");        
-    } while (codigosUsados.includes(numero));        
-        
-    codigosUsados.push(numero);        
-        
-    document.getElementById("codigo").textContent = numero;        
-}             
-              
-                     
-</script>       
 
-</body>              
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    query,
+    where,
+    getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDtJaR8yH9oPqy32h-1V2xPQ1pAcapL2Lw",
+    authDomain: "generado-v1.firebaseapp.com",
+    projectId: "generado-v1",
+    storageBucket: "generado-v1.firebasestorage.app",
+    messagingSenderId: "780797491925",
+    appId: "1:780797491925:web:decd276f5ec1a194ce805c"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+async function generarCodigo() {
+
+    let numero;
+    let existe = true;
+
+    while (existe) {
+
+        numero = Math.floor(Math.random() * 100000)
+            .toString()
+            .padStart(5, "0");
+
+        const q = query(
+            collection(db, "codigos"),
+            where("codigo", "==", numero)
+        );
+
+        const resultado = await getDocs(q);
+
+        existe = !resultado.empty;
+    }
+
+
+    await addDoc(collection(db, "codigos"), {
+        codigo: numero,
+        activo: true,
+        creado: new Date()
+    });
+
+
+    document.getElementById("codigo").textContent = numero;
+}
+
+window.generarCodigo = generarCodigo;
+
+</script>
+
+</body>
 </html>
