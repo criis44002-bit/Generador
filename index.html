@@ -1,0 +1,54 @@
+<!DOCTYPE html>    <html>    <head>              <title>Generador de códigos</title>
+
+</head>              
+<body style="background-color:#b0e0e6;">          
+   <h1 style="color:#1769aa;">Generador de códigos</h1>           
+          
+   <div style="
+    background-color:dff6ff;
+    width:80%;
+    max-width:400px;
+    margin:80px auto;
+    padding:25px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+">
+    
+    <h1 style="color:#1769aa;">Generador de códigos</h1>
+
+    <p id="codigo">Tu código aparecerá aquí</p>
+
+    <button onclick="generarCodigo()" style="
+        background-color:#1769aa;
+        color:white;
+        padding:12px 25px;
+        border:none;
+        border-radius:10px;
+        font-size:16px;
+    ">
+        GENERAR CÓDIGO
+    </button>
+
+</div>
+         <script>            
+          let codigosUsados = [];              
+    function generarCodigo() {        
+    let numero;        
+        
+    do {        
+        numero = Math.floor(Math.random() * 100000)        
+            .toString()        
+            .padStart(5, "0");        
+    } while (codigosUsados.includes(numero));        
+        
+    codigosUsados.push(numero);        
+        
+    document.getElementById("codigo").textContent = numero;        
+}             
+              
+                     
+</script>       
+
+</body>              
+</html>
